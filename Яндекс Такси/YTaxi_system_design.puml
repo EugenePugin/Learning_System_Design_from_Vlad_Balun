@@ -1,22 +1,46 @@
 @startuml
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
 
-Person(user, "User")
+Person(passenger, "Passenger")
+Person(driver, "Driver")
 Container(loadBalancer, "Load Balancer", "Nginx", "Uses round robin")
-Container(analyticsSystem, "Analytics system", "Software system", "Stores different analytic information about tiny URLs")
+Container(apiGateway, "API Gateway", "", "")
 ContainerQueue(messageQueue, "Events queue", "Kafka", "Message queue for events by tiny URLs")
 
 System_Boundary(coreSystem, "Core system") {
-    Container(urlService, "URL Service", "Go", "Handles creation tiny URL and redirects to long URL from tiny URL", $tags="webApp")
-    ContainerDb(urlDatabase, "URL database", "PgSQL", "Stores long URLs by tiny URLs",  $tags="db")
-    ContainerDb(urlCache, "URL cache", "Tarantool", "Stores popular long URLs by tiny URLs",  $tags="db")
+    Container(matchingService, "Matching Service", " ", "tbd", $tags="webApp")
+    ContainerDb(matchingDatabase, "Matching database", "Tarantool", "",  $tags="db")
+    Container(notificationService, "Notification Service", " ", "tbd", $tags="webApp")
+    Container(geoService, "Geo Service", " ", "tbd", $tags="webApp")
+    ContainerDb(geoDatabase, "Geo database", "Tarantool", "",  $tags="db")
 }
 
-Rel(user, loadBalancer, "Creates tiny URL and redirects from tiny URL to long URL", "REST")
-Rel(loadBalancer, urlService, "Creates tiny URL and redirects from tiny URL to long URL", "REST")
+System_Boundary(rideSystem, "Ride system") {
+    Container(rideService, "Ride Service", " ", "tbd", $tags="webApp")
+    ContainerDb(rideDatabase, "Ride database", "Tarantool", "",  $tags="db")
+}
 
-Rel(urlService, urlDatabase, "Creates tiny URLs and gets long URLs by tiny URLs")
-Rel(urlService, urlCache, "Gets and puts least frequently used URLs")
-Rel(urlService, messageQueue, "Publishes click events by tiny URLs")
-Rel(analyticsSystem, messageQueue, "Subscribes on click events by tiny URLs")
+System_Boundary(analyticalSystem, "Analythical system") {
+    Container(historyService, "History Service", " ", "tbd", $tags="webApp")
+    ContainerDb(historyDatabase, "History database", "Clickhouse", "",  $tags="db")
+}
+
+Rel(passenger, loadBalancer, "Call API methods, aimed for passenger use-cases", "REST")
+Rel(driver, loadBalancer, "Call API methods, aimed for driver use-cases", "REST")
+
+Rel(loadBalancer, apiGateway, " ", "")
+Rel(apiGateway, matchingService, "", "")
+
+
+Rel(matchingService, matchingDatabase, "")
+Rel(matchingService, notificationService, "")
+Rel(matchingService, geoService, "")
+Rel(geoService, geoDatabase, "")
+Rel(notificationService, passenger, "Notifies passenger", "REST")
+Rel(notificationService, driver, "Notifies driver", "REST")
+Rel(matchingService, rideService, "")
+Rel(rideService, messageQueue, "Publishes ride info for history and analytics")
+Rel(historyService, messageQueue, "Subscribes for ride info for history and analytics")
+
+
 @enduml
