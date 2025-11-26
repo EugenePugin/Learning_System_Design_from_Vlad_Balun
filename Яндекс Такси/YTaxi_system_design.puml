@@ -8,20 +8,20 @@ Container(apiGateway, "API Gateway", "", "")
 ContainerQueue(messageQueue, "Events queue", "Kafka", "Message queue for events by tiny URLs")
 
 System_Boundary(coreSystem, "Core system") {
-    Container(matchingService, "Matching Service", " ", "tbd", $tags="webApp")
+    Container(matchingService, "Matching Service", " ", "", $tags="webApp")
     ContainerDb(matchingDatabase, "Matching database", "Tarantool", "",  $tags="db")
-    Container(notificationService, "Notification Service", " ", "tbd", $tags="webApp")
-    Container(geoService, "Geo Service", " ", "tbd", $tags="webApp")
+    Container(notificationService, "Notification Service", " ", "", $tags="webApp")
+    Container(geoService, "Geo Service", " ", "", $tags="webApp")
     ContainerDb(geoDatabase, "Geo database", "Tarantool", "",  $tags="db")
 }
 
 System_Boundary(rideSystem, "Ride system") {
-    Container(rideService, "Ride Service", " ", "tbd", $tags="webApp")
+    Container(rideService, "Ride Service", " ", "", $tags="webApp")
     ContainerDb(rideDatabase, "Ride database", "Tarantool", "",  $tags="db")
 }
 
 System_Boundary(analyticalSystem, "Analythical system") {
-    Container(historyService, "History Service", " ", "tbd", $tags="webApp")
+    Container(historyService, "History Service", " ", "", $tags="webApp")
     ContainerDb(historyDatabase, "History database", "Clickhouse", "",  $tags="db")
 }
 

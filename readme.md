@@ -1,5 +1,5 @@
 Задание:
-- разработать system design ЯндексТакси
+- разработать system design ЯндексТакси: [hyperlink](tbd)
 - разработать system design социальной сети VK
 
 Решение:
